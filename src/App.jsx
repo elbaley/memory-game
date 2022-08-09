@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Cards from "./components/Cards";
 import Header from "./components/Header";
+
 function App() {
   return (
     <Wrapper>

@@ -42,7 +42,7 @@ const Cards = () => {
 
 export default Cards;
 const Wrapper = styled.div`
-  perspective: 800px;
+  perspective: 950px;
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(5, 1fr);
