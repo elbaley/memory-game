@@ -16,6 +16,10 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  /* modal */
+  --modalOverlay: rgba(200, 200, 200, 0.1);
+  --modalBackground: #161616;
   /* box shadow*/
   --shadow-1: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   --shadow-2: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -67,6 +71,8 @@ button:focus-visible {
   :root {
     color: #213547;
     background-color: #ffffff;
+    --modalBackground: white;
+    --modalOverlay: rgba(0, 0, 0, 0.9);
   }
   a:hover {
     color: #747bff;

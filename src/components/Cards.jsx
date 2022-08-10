@@ -1,39 +1,87 @@
+import { nanoid } from "@reduxjs/toolkit";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-
+import {
+  addFrameworks,
+  decrementScore,
+  frameworkList,
+  incrementScore,
+  selectCard,
+  toggleGameOver,
+} from "../features/card/cardSlice";
+import Card from "./Card";
 const Cards = () => {
-  const myArray = Array(25)
-    .fill(null)
-    .map((_, i) => i);
+  const cards = useSelector(selectCard);
+  const dispatch = useDispatch();
+
+  const [flippedCards, setFlippedCards] = useState([]);
+  const [solvedCards, setSolvedCards] = useState([]);
+
+  // add cardList to state
+  useEffect(() => {
+    const duplicatedFrameworkList = [...frameworkList, ...frameworkList].sort(
+      () => Math.random() - 0.5
+    );
+    dispatch(
+      addFrameworks(
+        duplicatedFrameworkList.map((framework) => {
+          return {
+            ...framework,
+            id: nanoid(),
+          };
+        })
+      )
+    );
+  }, [frameworkList]);
+
+  useEffect(() => {
+    //check flipped cards and set score
+    if (flippedCards.length === 2) {
+      if (
+        flippedCards[0].name === flippedCards[1].name &&
+        flippedCards[0].id !== flippedCards[1].id
+      ) {
+        console.log("same cards!");
+        setSolvedCards([...solvedCards, flippedCards[0], flippedCards[1]]);
+        setFlippedCards([]);
+        dispatch(incrementScore());
+      } else {
+        dispatch(decrementScore());
+        setTimeout(() => {
+          setFlippedCards([]);
+        }, 700);
+      }
+    }
+
+    //if every card has been solved finish the game
+    if (solvedCards.length === frameworkList.length * 2) {
+      setTimeout(() => {
+        dispatch(toggleGameOver());
+      }, 1000);
+    }
+  }, [flippedCards, solvedCards]);
+
   return (
     <Wrapper>
-      {/* Single Card */}
-      {/* <div
-        onClick={(e) => {
-          e.target.parentElement.classList.toggle("is-flipped");
-        }}
-        className='card'
-      >
-        <div className='card-face card-face--front'></div>
-        <div className='card-face card-face--back'>
-          <img
-            src='https://github.com/samiheikki/javascript-guessing-game/blob/master/static/logos/bower.png?raw=true'
-            className='logo'
-          />
-        </div>
-      </div> */}
-
-      {myArray.map((item) => {
+      {cards?.cardList.map((card) => {
         return (
-          <div
-            key={item}
-            onClick={(e) => {
-              e.target.parentElement.classList.toggle("is-flipped");
+          <Card
+            onClickFunc={() => {
+              if (
+                // flip the card
+                flippedCards.length < 2 &&
+                !solvedCards.includes(card) &&
+                !flippedCards.includes(card)
+              ) {
+                setFlippedCards([...flippedCards, card]);
+              }
             }}
-            className='card'
-          >
-            <div className='card-face card-face--front'></div>
-            <div className='card-face card-face--back'>Back Side</div>
-          </div>
+            flipped={flippedCards.includes(card)}
+            solved={solvedCards.includes(card)}
+            card={card}
+            key={card.id}
+          />
         );
       })}
     </Wrapper>
@@ -48,44 +96,4 @@ const Wrapper = styled.div`
   grid-template-columns: repeat(5, 1fr);
   max-width: 600px;
   margin: 0 auto;
-  .card {
-    position: relative;
-    height: 100px;
-    width: 100px;
-    transition: transform 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
-    transform-style: preserve-3d;
-  }
-  .card-face {
-    border-radius: 1rem;
-    box-shadow: var(--shadow-3);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    backface-visibility: hidden;
-  }
-  .card-face--front {
-    /* background: red; */
-  }
-  .card-face--front:after {
-    content: "?";
-    font-size: 3rem;
-    position: absolute;
-    inset: 40%;
-  }
-  .card-face--back {
-    /* background: blue; */
-    background-color: aliceblue;
-    display: grid;
-    place-content: center;
-
-    transform: rotateY(180deg);
-  }
-  .logo {
-    max-width: 80px;
-    object-fit: contain;
-  }
-  .is-flipped {
-    transform: rotateY(180deg);
-  }
 `;

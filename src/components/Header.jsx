@@ -1,6 +1,9 @@
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { selectCard } from "../features/card/cardSlice";
 
 const Header = () => {
+  const game = useSelector(selectCard);
   return (
     <Wrapper>
       <h2>Memory Game</h2>
@@ -9,6 +12,9 @@ const Header = () => {
         cards do not match you will lose <span className='lose'>10 points</span>
         !
       </p>
+      <span>
+        <strong>Score:</strong> {game.score}
+      </span>
     </Wrapper>
   );
 };
