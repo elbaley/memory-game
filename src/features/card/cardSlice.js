@@ -51,10 +51,10 @@ export const frameworkList = [
   },
   {
     id: nanoid(),
-    name: "express",
+    name: "ionic",
     flipped: false,
     image:
-      "https://github.com/samiheikki/javascript-guessing-game/blob/master/static/logos/expressjs.png?raw=true",
+      "https://github.com/samiheikki/javascript-guessing-game/blob/master/static/logos/ionic.png?raw=true",
   },
   {
     id: nanoid(),
@@ -73,8 +73,10 @@ export const frameworkList = [
 ];
 
 const initialState = {
-  gameOver: false,
+  gameOver: true,
   score: 100,
+  flippedCardsList: [],
+  solvedCardList: [],
   cardList: [],
 };
 
@@ -87,26 +89,47 @@ export const cardSlice = createSlice({
         state.cardList = action.payload;
       }
     },
-    incrementScore: (state) => {
-      state.score += 50;
+    select: (state, action) => {
+      const card = action.payload.card;
+      if (
+        state.flippedCardsList.length < 2 &&
+        !state.solvedCardList.includes(card) &&
+        !state.flippedCardsList.includes(card)
+      ) {
+        state.flippedCardsList.push(card);
+      }
     },
-    decrementScore: (state) => {
-      state.score -= 10;
+    compare: (state, action) => {
+      if (state.flippedCardsList[0].name === state.flippedCardsList[1].name) {
+        /// add cards to solvedCardList
+        state.solvedCardList.push(state.flippedCardsList[0]);
+        state.solvedCardList.push(state.flippedCardsList[1]);
+        //empty flipped cards array
+        state.flippedCardsList = [];
+        // set score
+        state.score += 50;
+      } else {
+        state.flippedCardsList = [];
+        state.score -= 10;
+      }
     },
+
     toggleGameOver: (state) => {
       state.gameOver = !state.gameOver;
+    },
+    reload: (state) => {
+      state.flippedCardsList = [];
+      state.solvedCardList = [];
+      state.score = 100;
+      state.gameOver = false;
+      state.cardList = state.cardList.sort(() => Math.random() - 0.5);
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const {
-  toggleGameOver,
-  incrementScore,
-  decrementScore,
-  flipCard,
-  addFrameworks,
-} = cardSlice.actions;
+export const { toggleGameOver, select, compare, addFrameworks, reload } =
+  cardSlice.actions;
 
 // Select
 export const selectCard = (state) => state.card;

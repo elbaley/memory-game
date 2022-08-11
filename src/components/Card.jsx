@@ -1,9 +1,6 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
 
 const Card = ({ card, flipped, onClickFunc, solved }) => {
-  const dispatch = useDispatch();
   return (
     <Wrapper solved={solved} logo={card.image}>
       <div
@@ -14,7 +11,6 @@ const Card = ({ card, flipped, onClickFunc, solved }) => {
       >
         <div className='card-face card-face--front'></div>
         <div className='card-face card-face--back'></div>
-        {card.name}
       </div>
     </Wrapper>
   );
@@ -26,10 +22,12 @@ const Wrapper = styled.div`
   --cardSize: 100px;
   opacity: ${(props) => (props.solved ? "0.4" : "1.0")};
   transition: all 1s;
+  width: 100%;
+  height: var(--cardSize);
   .card {
     position: relative;
+    /* width: 100%; */
     height: var(--cardSize);
-    width: var(--cardSize);
     transition: transform 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
     transform-style: preserve-3d;
   }
@@ -74,11 +72,13 @@ const Wrapper = styled.div`
   .is-flipped {
     transform: rotateY(180deg);
   }
+  @media (max-width: 450px) {
+    --cardSize: 60px;
+  }
+
   @media (max-width: 500px) {
-    .card {
-      width: 70px;
-      height: 70px;
-    }
+    /* --cardSize: 150px; */
+
     .card-face--front:after {
       inset: 36%;
       font-size: 1.8rem;
@@ -86,5 +86,8 @@ const Wrapper = styled.div`
     .card-face--back:before {
       background-size: 60% 60%;
     }
+  }
+  @media (min-width: 700px) {
+    --cardSize: 105px;
   }
 `;

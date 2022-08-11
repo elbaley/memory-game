@@ -1,22 +1,22 @@
 import { nanoid } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import {
   addFrameworks,
-  decrementScore,
   frameworkList,
-  incrementScore,
   selectCard,
   toggleGameOver,
+  select,
+  compare,
 } from "../features/card/cardSlice";
 import Card from "./Card";
 const Cards = () => {
   const cards = useSelector(selectCard);
   const dispatch = useDispatch();
 
-  const [flippedCards, setFlippedCards] = useState([]);
-  const [solvedCards, setSolvedCards] = useState([]);
+  const flippedCards = cards.flippedCardsList;
+  const solvedCards = cards.solvedCardList;
 
   // add cardList to state
   useEffect(() => {
@@ -35,27 +35,17 @@ const Cards = () => {
     );
   }, [frameworkList]);
 
+  //game logic
   useEffect(() => {
     //check flipped cards and set score
     if (flippedCards.length === 2) {
-      if (
-        flippedCards[0].name === flippedCards[1].name &&
-        flippedCards[0].id !== flippedCards[1].id
-      ) {
-        console.log("same cards!");
-        setSolvedCards([...solvedCards, flippedCards[0], flippedCards[1]]);
-        setFlippedCards([]);
-        dispatch(incrementScore());
-      } else {
-        dispatch(decrementScore());
-        setTimeout(() => {
-          setFlippedCards([]);
-        }, 700);
-      }
+      setTimeout(() => {
+        dispatch(compare());
+      }, 700);
     }
 
     //if every card has been solved finish the game
-    if (solvedCards.length === frameworkList.length * 2) {
+    if (solvedCards.length === 20) {
       setTimeout(() => {
         dispatch(toggleGameOver());
       }, 1000);
@@ -74,7 +64,7 @@ const Cards = () => {
                 !solvedCards.includes(card) &&
                 !flippedCards.includes(card)
               ) {
-                setFlippedCards([...flippedCards, card]);
+                dispatch(select({ card }));
               }
             }}
             flipped={flippedCards.includes(card)}
@@ -96,4 +86,10 @@ const Wrapper = styled.div`
   grid-template-columns: repeat(5, 1fr);
   max-width: 600px;
   margin: 0 auto;
+  padding: 0 0.25rem;
+  place-content: center;
+
+  @media (max-width: 500px) {
+    gap: 0.7rem;
+  }
 `;

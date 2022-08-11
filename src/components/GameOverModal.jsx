@@ -1,7 +1,10 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { toggleGameOver, reload } from "../features/card/cardSlice";
 
 const GameOverModal = () => {
+  const dispatch = useDispatch();
   return (
     <Wrapper>
       <div className='modal'>
@@ -10,8 +13,20 @@ const GameOverModal = () => {
           Your score: <strong>1000</strong>!{" "}
         </p>
         <div className='buttons'>
-          <button>Play Again</button>
-          <button>Close</button>
+          <button
+            onClick={() => {
+              dispatch(reload());
+            }}
+          >
+            Play Again
+          </button>
+          <button
+            onClick={() => {
+              dispatch(toggleGameOver());
+            }}
+          >
+            Close
+          </button>
         </div>
       </div>
     </Wrapper>
