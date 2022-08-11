@@ -1,16 +1,17 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { toggleGameOver, reload } from "../features/card/cardSlice";
+import { toggleGameOver, reload, selectCard } from "../features/card/cardSlice";
 
 const GameOverModal = () => {
+  const cards = useSelector(selectCard);
   const dispatch = useDispatch();
   return (
     <Wrapper>
       <div className='modal'>
         <p>Game Over!</p>
         <p>
-          Your score: <strong>1000</strong>!{" "}
+          Your score: <strong>{cards.score}</strong>!{" "}
         </p>
         <div className='buttons'>
           <button
