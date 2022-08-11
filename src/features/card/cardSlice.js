@@ -73,7 +73,7 @@ export const frameworkList = [
 ];
 
 const initialState = {
-  gameOver: true,
+  gameOver: false,
   score: 100,
   flippedCardsList: [],
   solvedCardList: [],
